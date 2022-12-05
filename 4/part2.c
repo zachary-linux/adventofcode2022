@@ -7,10 +7,10 @@
 int main() {
     char buff[50];
 
-    char num1arr[4];
-    char num2arr[4];
-    char num3arr[4];
-    char num4arr[4];
+    char num1arr[3];
+    char num2arr[3];
+    char num3arr[3];
+    char num4arr[3];
 
     char *dashp1;
     char *dashp2;
@@ -22,7 +22,7 @@ int main() {
     int num3;
     int num4;
 
-    int assiPairCount = 0;
+    int overlap = 0;
 
     FILE * fp; // fp is a pointer to the file
     fp = fopen("input.txt", "r");
@@ -69,16 +69,14 @@ int main() {
                 num3 = num4;
                 num4 = temp;
             }
+            // x1 = num1, x2 = num2 y1 = num3, y2 = num4
 
-            // checking if one of the int sets are enclosed
-            if(num1<=num3 && num2>=num4) {
-                // printf("Second enclosed in first: %d-%d, %d-%d\n", num1, num2, num3, num4);
-                assiPairCount++;
-            } else if(num1>=num3 && num2<=num4) {
-                // printf("First enclosed in second: %d-%d, %d-%d\n", num1, num2, num3, num4);
-                assiPairCount++;
+            // checking if the sets don't overlap
+            if(num1 <= num4 && num3 <=num2) { // if first set is bigger than second with no overlap
+                // printf("Sets overlap?: %d-%d, %d-%d\n", num1, num2, num3, num4);
+                overlap++;
             }
         }
     }
-    printf("%d\n", assiPairCount);
+    printf("%d\n", overlap);
 }
