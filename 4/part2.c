@@ -69,9 +69,8 @@ int main() {
                 num3 = num4;
                 num4 = temp;
             }
-            // x1 = num1, x2 = num2 y1 = num3, y2 = num4
 
-            // checking if the sets don't overlap
+            // checking if the sets overlap
             if(num1 <= num4 && num3 <=num2) { // if first set is bigger than second with no overlap
                 // printf("Sets overlap?: %d-%d, %d-%d\n", num1, num2, num3, num4);
                 overlap++;
