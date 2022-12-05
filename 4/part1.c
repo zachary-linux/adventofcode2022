@@ -3,124 +3,82 @@
 #include <string.h>
 #include <ctype.h>
 
-int arrayToNum(int arr[], int size) {
-    int num;
-    char charArr[3];
-
-    for(int i = 0; i < size; i++) {
-        charArr[i] = arr[i];
-    }
-    num = atoi(charArr);
-    return num;
-} 
-
 
 int main() {
     char buff[50];
-    //char *dashp1;
-    //char *dashp2;
-    int buffSize;
-    int number1[3] = {-1};
-    int number2[3] = {-1};
-    int number3[3] = {-1};
-    int number4[3] = {-1};
-    int onNo2 = 0;
-    int onNo3 = 0;
-    int onNo4 = 0;
 
-    int counter = 0;
+    char num1arr[3];
+    char num2arr[3];
+    char num3arr[3];
+    char num4arr[3];
+
+    char *dashp1;
+    char *dashp2;
+    char *commap;
+    char *nlp;
+
+    int num1;
+    int num2;
+    int num3;
+    int num4;
+
+    int assiPairCount = 0;
 
     FILE * fp; // fp is a pointer to the file
     fp = fopen("input.txt", "r");
 
     if (fp != NULL) {
         while(fgets(buff, 50, fp) != NULL) { // iterates through file - pointers can be null, ints can't
-            // dashp1 = strchr(buff, '-'); gets first occurence of dash
-            // dashp2 = strrchr(buff, '-'); gets second occurence of dash
-            int onNo2 = 0;
-            int onNo3 = 0;
-            int onNo4 = 0;
+            dashp1 = strchr(buff, '-'); //gets address of first dash dash
+            dashp2 = strrchr(buff, '-'); //gets address of second dash
+            commap = strchr(buff, ','); // gets address of comma
+            nlp = strchr(buff, '\n'); // gets address of newline
+            
+            // format: arg1 is destination, arg2 is start, arg3 is end
+            strncpy(num1arr,buff,dashp1-buff); // dashp1 points to first dash, buff points to start of line
+            num1arr[dashp1-buff] = '\0';
 
-            buffSize = strlen(buff);
-            int index = 0;
+            strncpy(num2arr,dashp1+1,commap-dashp1-1); // this one starts at the char after the one the pointer is pointing to
+            num2arr[commap-dashp1] = '\0';
 
-            for(int i = 0; i < buffSize; i++) { // sorts numbers into correct array.
-                printf("Buff: %s\n", buff);
-                if(!onNo2) {
-                    if(buff[i] != '-') {
-                        number1[index] = buff[i];
-                        index++;
-                    } else {
-                        onNo2 = 1;
-                        index = 0;
-                    }
-                } else if(!onNo3) {
-                    if(buff[i] != ',') {
-                        number2[index] = buff[i];
-                        index++;
-                    } else {
-                        onNo3 = 1;
-                        index = 0;
-                    }
-                } else if (!onNo4) {
-                    if(buff[i] != '-') {
-                        number3[index] = buff[i];
-                        index++;
-                    } else {
-                        onNo4 = 1;
-                        index = 0;
-                    }
-                } else {
-                    if(buff[i] != '\n') {
-                        number4[index] = buff[i]; // minus 48??
-                        index++;
-                    }
-                }
+            strncpy(num3arr,commap+1,dashp2-commap-1); // starts at comma, ends at second dash
+            num3arr[dashp2-commap] = '\0';
+
+            strncpy(num4arr,dashp2+1,nlp-dashp2-1); // starts at second dash, ends at newline
+            num4arr[nlp-dashp2] = '\0';
+            // obviously the dashes/newlines weren't included
+
+            // printf("char: %s %s %s %s\n", num1arr, num2arr, num3arr, num4arr);
+            
+            num1 = atoi(num1arr);
+            num2 = atoi(num2arr);
+            num3 = atoi(num3arr);
+            num4 = atoi(num4arr);
+
+            // printf("int: %d %d %d %d\n", num1, num2, num3, num4);
+
+            // putting nums in order:
+            int temp;
+            if(num2<num1) {
+                temp = num1;
+                num1 = num2;
+                num2 = temp;
             }
-            int arrSize1 = sizeof(number1)/sizeof(number1[0]);
-            int arrSize2 = sizeof(number2)/sizeof(number2[0]);
-            int arrSize3 = sizeof(number3)/sizeof(number3[0]);
-            int arrSize4 = sizeof(number4)/sizeof(number4[0]);
-
-
-            int num1 = arrayToNum(number1, arrSize1);
-            int num2 = arrayToNum(number2, arrSize2);
-            int num3 = arrayToNum(number3, arrSize3);
-            int num4 = arrayToNum(number4, arrSize4);
-
-            printf("check %d, %d, %d, %d\n", num1, num2, num3, num4);
-
-            int lower1;
-            int higher1;
-            int lower2;
-            int higher2;
-
-            // ordering numbers to make if statements easier
-            if(num1<num2) {
-                lower1 = num1;
-                higher1 = num2;
-            } else if(num1>num2) {
-                lower1 = num2;
-                higher1 = num1;
+            if(num4<num3) {
+                temp = num3;
+                num3 = num4;
+                num4 = temp;
             }
 
-            if(num3<num4) {
-                lower2 = num3;
-                higher2 = num4;
-            } else if(num3>num4) {
-                lower2 = num4;
-                higher2 = num3;
-            }
-
-            printf("Counter up maybe?: %d-%d, %d-%d\n", lower1, higher1, lower2, higher2);
-            if(lower1<=lower2 && higher1>=higher2) {
-                counter++;
-                printf("Counter up: %d-%d, %d-%d\n", lower1, higher1, lower2, higher2);
-            } else if (lower2<=lower1 && higher2>=higher1) {
-                counter++;
-                printf("Counter up: %d-%d, %d-%d\n", lower1, higher1, lower2, higher2);
+            // checking if one of the int sets are enclosed
+            if(num1<=num3 && num2>=num4) {
+                printf("Second enclosed in first: %d-%d, %d-%d\n", num1, num2, num3, num4);
+                assiPairCount++;
+            } else if(num1>=num3 && num2<=num4) {
+                printf("First enclosed in second: %d-%d, %d-%d\n", num1, num2, num3, num4);
+                assiPairCount++;
             }
         }
     }
-    printf("%d\n", counter);
+    printf("%d\n", assiPairCount);
 }
