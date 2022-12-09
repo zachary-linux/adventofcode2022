@@ -28,6 +28,7 @@ void pushStack(struct Stack *stackp, char item) {
 }
 
 void initialiseStack(struct Stack *stackp){
+    *stackp = malloc(sizeof(struct Stack));
     stackp->topP = NULL;
     stackp->currentSize = 0;
 }
